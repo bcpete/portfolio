@@ -8,27 +8,42 @@ export default class MainPage extends React.Component{
     entered: false
   };
 
+  componentDidMount(){
+    this.setState({ show: true })
+  }
+
+  componentWillUnmount(){
+    this.setState({show: false})
+  }
+
   render(){
+    const onExit = (node) => {
+      const { style } = node;
+      style.opacity= '0';
+    }
+
     const { show } = this.state;
 
-    const duration = 1000;
+    const duration = 750;
 
     const defaultStyle = {
-      transition: `opacity ${duration}ms ease-in-out`,
-      opacity: 0
+      transition: `all ${duration}ms`,
+      opacity: 0,
     }
 
     const transitionStyles = {
-      entering: { opacity: 0 },
-      entered:  { opacity: 1 },
+      entering: { opacity: 0, transform: `translate3d(100%, 0, 0)` },
+      entered:  { opacity: 1, transform: `translate3d(0, 0, 0)` },
+      exiting:  { opacity: 1, transform: `translate3d(0, 0, 0)` },
+      exited:   { opacity: 0, transform: `translate3d(100%, 0, 0)` },
     };
     
     return(
       <div>
         <Transition 
-          in={true} 
-          timeout={duration}
-          appear={true}
+          in={show} 
+          timeout={{enter: duration, exit: duration}}
+          onExit={onExit}
         >
           {(state) => (
             <h1 style={{
